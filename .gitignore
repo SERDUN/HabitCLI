@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+
+# build outputs
+dist/
+build/
+coverage/
+
+# environment files
+.env
+.env.*
+
+# IDEs and editors
+.idea/
+.vscode/
+*.sw?
+
+# logs
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# package-lock.json

@@ -17,6 +17,11 @@ export default defineConfig([
         plugins: {js},
         extends: ['js/recommended'],
         rules: {
+            'no-unused-vars': ['error', {
+                varsIgnorePattern: '^_',
+                argsIgnorePattern: '^_',
+                caughtErrorsIgnorePattern: '^_',
+            }],
             semi: ['error', 'always'],
             quotes: ['error', 'single'],
             'no-console': 'warn',

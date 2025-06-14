@@ -24,7 +24,6 @@ export default defineConfig([
             }],
             semi: ['error', 'always'],
             quotes: ['error', 'single'],
-            'no-console': 'warn',
         },
     },
     {

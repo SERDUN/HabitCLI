@@ -14,6 +14,13 @@ export class JsonListDataSource {
         }
     }
 
+    replaceAll(objects) {
+        if (!Array.isArray(objects)) {
+            throw new Error('Input must be an array');
+        }
+        this._save(objects);
+    }
+
     add(object) {
         const list = this.getAll();
         list.push(object);

@@ -1,0 +1,42 @@
+import * as assetsUtil from '../utils/index.js';
+
+export class JsonListDataSource {
+    constructor(filename) {
+        this.filename = filename;
+    }
+
+    getAll() {
+        const raw = assetsUtil.readAsset(this.filename);
+        try {
+            return JSON.parse(raw);
+        } catch (_) {
+            return [];
+        }
+    }
+
+    add(object) {
+        const list = this.getAll();
+        list.push(object);
+        this._save(list);
+    }
+
+    update(oldObject, newObject) {
+        const list = this.getAll();
+        const index = list.findIndex(obj => JSON.stringify(obj) === JSON.stringify(oldObject));
+        if (index === -1) throw new Error('Object not found');
+        list[index] = newObject;
+        this._save(list);
+    }
+
+    remove(object) {
+        const list = this.getAll();
+        const index = list.findIndex(obj => JSON.stringify(obj) === JSON.stringify(object));
+        if (index === -1) throw new Error('Object not found');
+        list.splice(index, 1);
+        this._save(list);
+    }
+
+    _save(data) {
+        assetsUtil.writeAsset(this.filename, JSON.stringify(data, null, 2));
+    }
+}

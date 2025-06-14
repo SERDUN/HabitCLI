@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint . --fix",
     "start": "npm run lint && node src/main.js",
-    "test": "node --test"
+    "test": "node --test --test-reporter=spec --test-concurrency=1"
   },
   "repository": {
     "type": "git",

@@ -1,26 +1,21 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readAsset, writeAsset} from '../src/utils/assets.js';
-import {resolve} from 'path';
-import {unlinkSync, existsSync} from 'fs';
-
-const testFilename = 'habits.test.json';
-const testTargetsContent = '["Jogging"]';
+import {fileExists, resetTestFile, cleanupTestFile, testFilename, testTargetsContent} from './utils.js';
 
 test('writeAsset writes file correctly', () => {
+    resetTestFile();
     writeAsset(testFilename, testTargetsContent);
-    const fullPath = resolve('assets', testFilename);
-    assert.ok(existsSync(fullPath));
+    assert.ok(fileExists());
 });
 
 test('readAsset reads written file content correctly', () => {
+    resetTestFile();
     const content = readAsset(testFilename);
     assert.equal(content, testTargetsContent);
 });
 
 test('cleanup test file', () => {
-    const fullPath = resolve('assets', testFilename);
-    if (existsSync(fullPath)) unlinkSync(fullPath);
-    assert.ok(!existsSync(fullPath));
+    cleanupTestFile();
+    assert.ok(!fileExists());
 });
-

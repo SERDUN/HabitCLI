@@ -14,7 +14,7 @@ export class HabitManagerController extends BaseController {
     }
 
     addHabit(args) {
-        return this.service.addHabit(args.name, '', '');
+        return this.service.addHabit(args.name, args.freq);
     }
 
     updateHabit(args) {

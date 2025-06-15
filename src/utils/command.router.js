@@ -1,4 +1,4 @@
-import {PrettyRenderer} from "./pretty.renderer.js";
+import {PrettyRenderer} from './pretty.renderer.js';
 
 export class CommandRouter {
     constructor(controllers, renderer = new PrettyRenderer()) {

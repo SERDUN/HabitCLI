@@ -12,17 +12,19 @@ Each habit is represented as an object with the following fields:
 {
   "id": "1",
   "title": "Drink Water",
-  "description": "Drink at least 8 glasses of water",
-  "createdAt": "2025-06-01T09:00:00.000Z"
+  "freq": "daily",
+  "updatedAt": "2025-06-01T09:00:00.000Z"
 }
 ```
 
 #### Fields:
 
-* `id` (string): Unique identifier for the habit.
-* `title` (string): The name of the habit.
-* `description` (string): A short explanation of what the habit is.
-* `createdAt` (ISO 8601 date string): Timestamp of when the habit was created.
+- `id` (string): Unique identifier for the habit.
+- `title` (string): The name of the habit.
+- `freq` (`"daily"` | `"weekly"` | `"monthly"`): Defines how often the habit should be completed.
+- `updatedAt` (ISO 8601 date string): The last time the habit was created or updated.
+
+> ℹ️ `description` and `createdAt` have been removed based on the current model. If they are still needed, they should be added back in both the code and documentation.
 
 ---
 
@@ -32,7 +34,7 @@ The completion status of habits is tracked separately in a history structure:
 
 ```json
 {
-  "habitId": 1,
+  "habitId": "1",
   "statuses": [
     {
       "date": "2025-06-01T09:00:00.000Z",
@@ -48,14 +50,13 @@ The completion status of habits is tracked separately in a history structure:
 
 #### Fields:
 
-* `habitId` (number): ID of the corresponding habit.
-* `statuses` (array): A list of status entries for the habit.
+- `habitId` (string): ID of the corresponding habit.
+- `statuses` (array): A list of status entries for the habit.
 
 Each `status` object contains:
 
-* `date` (ISO 8601 date string): The date when the status was recorded.
-* `status` (string): The recorded status of the habit. Allowed values:
-
-    * `PENDING`: Habit has not been attempted.
-    * `IN_PROGRESS`: Habit was partially completed.
-    * `DONE`: Habit was successfully completed.
+- `date` (ISO 8601 date string): The date when the status was recorded.
+- `status` (string): The recorded status of the habit. Allowed values:
+  - `PENDING`: Habit has not been attempted.
+  - `IN_PROGRESS`: Habit was partially completed.
+  - `DONE`: Habit was successfully completed.

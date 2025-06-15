@@ -36,7 +36,6 @@ export class JsonListDataSource {
     }
 
     getByProperty(property, value) {
-        console.log('Searching for property:', property, 'with value:', value);
         const list = this.getAll();
         return list.find(obj => obj[property] === value);
     }

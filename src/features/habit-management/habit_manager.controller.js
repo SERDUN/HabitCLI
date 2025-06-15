@@ -30,8 +30,6 @@ export class HabitManagerController extends BaseController {
     }
 
     deleteHabit(args) {
-        console.log('deleteHabit', args);
-        // Assuming the service has a delete method
         return this.service.deleteHabit(args.id);
     }
 }

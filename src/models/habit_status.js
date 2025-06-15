@@ -11,7 +11,11 @@ export class HabitStatus {
      * @param {StatusType} status - The status of the habit on the given date
      */
     constructor(date, status) {
-        this.date = new Date(date).toISOString(); // Normalize to ISO string format
+        this.date = new Date(date).toISOString();
         this.status = status;
+    }
+
+    static create(status) {
+        return new HabitStatus(new Date(), status);
     }
 }

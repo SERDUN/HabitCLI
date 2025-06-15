@@ -10,14 +10,15 @@ export class HabitManagerController extends BaseController {
         this.register('update', 'updateHabit');
         this.register('list', 'getAllHabits');
         this.register('get', 'getHabitById');
+        this.register('delete', 'deleteHabit');
     }
 
     addHabit(args) {
-        console.log('Add habit called with args:', args);
+        return this.service.addHabit(args.name, '', '');
     }
 
-    updateHabit(oldHabit, newHabit) {
-        return this.service.updateHabit(oldHabit, newHabit);
+    updateHabit(args) {
+        return this.service.updateHabit(args.id, args.name, '', '');
     }
 
     getAllHabits() {
@@ -26,5 +27,11 @@ export class HabitManagerController extends BaseController {
 
     getHabitById(id) {
         return this.service.getHabitById(id);
+    }
+
+    deleteHabit(args) {
+        console.log('deleteHabit', args);
+        // Assuming the service has a delete method
+        return this.service.deleteHabit(args.id);
     }
 }

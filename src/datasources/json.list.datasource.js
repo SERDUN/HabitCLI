@@ -35,6 +35,12 @@ export class JsonListDataSource {
         this._save(list);
     }
 
+    getByProperty(property, value) {
+        console.log('Searching for property:', property, 'with value:', value);
+        const list = this.getAll();
+        return list.find(obj => obj[property] === value);
+    }
+
     remove(object) {
         const list = this.getAll();
         const index = list.findIndex(obj => JSON.stringify(obj) === JSON.stringify(object));

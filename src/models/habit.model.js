@@ -12,4 +12,35 @@ export default class Habit {
         this.description = description;
         this.createdAt = createdAt;
     }
+
+    /**
+     * Factory method to create a habit without an id
+     * @param {string} title
+     * @param {string} description
+     * @param {StatusType} status
+     * @returns {Habit}
+     */
+    static create(title, description, status) {
+        return new Habit(undefined, title, description, status);
+    }
+
+    /**
+     * Returns a new Habit with overridden fields
+     * @param {Object} fields
+     * @param {string | number} [fields.id]
+     * @param {string} [fields.title]
+     * @param {string} [fields.description]
+     * @param {StatusType} [fields.status]
+     * @param {Date} [fields.createdAt]
+     * @returns {Habit}
+     */
+    copyWith({id, title, description, status, createdAt} = {}) {
+        return new Habit(
+            id ?? this.id,
+            title ?? this.title,
+            description ?? this.description,
+            status ?? this.status,
+            createdAt ?? this.createdAt
+        );
+    }
 }

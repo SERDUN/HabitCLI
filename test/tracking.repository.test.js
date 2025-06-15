@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {writeFileSync, unlinkSync, existsSync} from 'fs';
 import {resolve} from 'path';
-import {JsonListDataSource} from "../src/datasources/index.js";
-import {TrackingRepository} from "../src/repository/tracking.repository.js";
+import {JsonListDataSource} from '../src/datasources/index.js';
+import {TrackingRepository} from '../src/repository/tracking.repository.js';
 
 const testFile = 'tracking.test.json';
 const fullPath = resolve('assets', testFile);

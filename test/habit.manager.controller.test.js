@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {HabitManagerController} from "../src/features/index.js";
+import {HabitManagerController} from '../src/features/index.js';
 
 function createMockService() {
     const store = [];

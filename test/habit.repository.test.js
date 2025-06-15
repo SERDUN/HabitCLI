@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert';
 import {resetTestFile, cleanupTestFile} from './utils.js';
-import {HabitRepository} from "../src/repository/index.js";
-import {JsonListDataSource} from "../src/datasources/index.js";
+import {HabitRepository} from '../src/repository/index.js';
+import {JsonListDataSource} from '../src/datasources/index.js';
 
 test('getEmpty() should add a new object to JSON list', () => {
     resetTestFile();

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import {HabitManagerServices} from "../src/features/index.js";
+import {HabitManagerServices} from '../src/features/index.js';
 
 function createMockRepository() {
     const store = [];

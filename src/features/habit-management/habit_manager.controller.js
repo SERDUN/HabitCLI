@@ -21,8 +21,9 @@ export class HabitManagerController extends BaseController {
         return this.service.updateHabit(args.id, args.name, '', '');
     }
 
-    getAllHabits() {
-        return this.service.getAllHabits();
+    getAllHabits(_, {renderer}) {
+        const habits = this.service.getAllHabits();
+        renderer?.log?.(habits);
     }
 
     getHabitById(id) {

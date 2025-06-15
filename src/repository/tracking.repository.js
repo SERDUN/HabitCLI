@@ -1,41 +1,56 @@
 import {JsonListDataSource} from '../datasources/index.js';
+import {HabitStatusRecord} from '../models/habit_status_record.js';
+import {HabitStatus} from '../models/index.js';
+
 
 export class TrackingRepository {
     constructor(dataSource = new JsonListDataSource('tracking.json')) {
         this.dataSource = dataSource;
     }
 
-    async getStatusesByHabitId(habitId) {
-        const all = await this.dataSource.getAll();
-        return all.find((entry) => entry.habitId === habitId) || {habitId, statuses: []};
+    getStatusesByHabitId(habitId) {
+        const existing = this.dataSource.getByProperty('habitId', habitId);
+        console.log(existing);
+        if (!existing) {
+            return null;
+        }
+        return new HabitStatusRecord(existing.habitId, existing.statuses);
     }
 
-    async addStatus(habitId, statusEntry) {
-        const all = await this.dataSource.getAll();
-        let entry = all.find((e) => e.habitId === habitId);
+    addStatus(habitId) {
+        const existing = this.dataSource.getByProperty('habitId', habitId);
 
-        if (!entry) {
-            entry = {habitId, statuses: []};
-            all.push(entry);
+        const newStatus = HabitStatus.create('DONE');
+
+        if (!existing) {
+            this.dataSource.add(new HabitStatusRecord(habitId, [newStatus]));
+            return;
         }
 
-        entry.statuses.push(statusEntry);
-        await this.dataSource.replaceAll(all);
+        const updated = new HabitStatusRecord(habitId, [...existing.statuses, newStatus]);
+
+        this.dataSource.update(existing, updated);
     }
 
     async updateStatus(habitId, date, newStatus) {
-        const all = await this.dataSource.getAll();
-        const entry = all.find((e) => e.habitId === habitId);
-        if (!entry) return;
-
-        const status = entry.statuses.find((s) => s.date === date);
-        if (status) {
-            status.status = newStatus;
-            await this.dataSource.replaceAll(all);
+        const existing = this.dataSource.getByProperty('habitId', habitId);
+        if (!existing) {
+            throw new Error(`Habit with id ${habitId} not found`);
         }
+
+        const updatedStatuses = existing.statuses.map((status) => {
+            if (status.date === date) {
+                return HabitStatus.create(newStatus, date);
+            }
+            return status;
+        });
+
+        const updatedRecord = new HabitStatusRecord(existing.habitId, updatedStatuses);
+        this.dataSource.update(existing, updatedRecord);
     }
 
     async getAllStatuses() {
-        return await this.dataSource.getAll();
+        const all = await this.dataSource.getAll();
+        return all.map((e) => new HabitStatusRecord(e.habitId, e.statuses));
     }
 }

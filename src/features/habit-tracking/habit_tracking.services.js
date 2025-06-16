@@ -53,4 +53,8 @@ export class HabitTrackingServices {
     getStatusRecord(habitId) {
         return this.trackingRepository.getStatusesByHabitId(habitId);
     }
+
+    getAllStatuses() {
+        return this.trackingRepository.getAllStatuses();
+    }
 }

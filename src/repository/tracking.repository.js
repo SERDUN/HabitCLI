@@ -31,7 +31,7 @@ export class TrackingRepository {
         this.dataSource.update(existing, updated);
     }
 
-    async updateStatus(habitId, date, newStatus) {
+    updateStatus(habitId, date, newStatus) {
         const existing = this.dataSource.getByProperty('habitId', habitId);
         if (!existing) {
             throw new Error(`Habit with id ${habitId} not found`);
@@ -48,8 +48,8 @@ export class TrackingRepository {
         this.dataSource.update(existing, updatedRecord);
     }
 
-    async getAllStatuses() {
-        const all = await this.dataSource.getAll();
+    getAllStatuses() {
+        const all = this.dataSource.getAll();
         return all.map((e) => new HabitStatusRecord(e.habitId, e.statuses));
     }
 }

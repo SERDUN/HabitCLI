@@ -1,7 +1,7 @@
-import {PrettyRenderer} from './pretty.renderer.js';
+import {BaseRenderer} from './base.renderer.js';
 
 export class CommandRouter {
-    constructor(controllers, renderer = new PrettyRenderer()) {
+    constructor(controllers, renderer = new BaseRenderer()) {
         this.controllers = controllers;
         this.renderer = renderer;
     }

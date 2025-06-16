@@ -10,7 +10,10 @@ export class HabitRepository {
      * @param {Habit} habit
      */
     add(habit) {
-        this.dataSource.add(habit.copyWith({id: generateRandomId()}));
+        const habitId = generateRandomId();
+        const databaseHabit = habit.copyWith({id: habitId});
+        this.dataSource.add(databaseHabit);
+        return databaseHabit;
     }
 
     /**

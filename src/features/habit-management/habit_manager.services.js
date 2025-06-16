@@ -7,7 +7,7 @@ export class HabitManagerServices {
     }
 
     addHabit(title, frequency) {
-        this.repository.add(Habit.create(title, frequency));
+        return this.repository.add(Habit.create(title, frequency));
     }
 
     updateHabit(id, title, description, frequency) {

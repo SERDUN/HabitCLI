@@ -49,4 +49,8 @@ export class HabitTrackingServices {
         const completedDays = statuses.length;
         return Math.round((completedDays / totalDays) * 100);
     }
+
+    getStatusRecord(habitId) {
+        return this.trackingRepository.getStatusesByHabitId(habitId);
+    }
 }

@@ -10,7 +10,6 @@ export class TrackingRepository {
 
     getStatusesByHabitId(habitId) {
         const existing = this.dataSource.getByProperty('habitId', habitId);
-        console.log(existing);
         if (!existing) {
             return null;
         }

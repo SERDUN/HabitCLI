@@ -13,8 +13,15 @@ export class HabitManagerController extends BaseController {
         this.register('delete', 'deleteHabit');
     }
 
-    addHabit(args) {
-        return this.service.addHabit(args.name, args.freq);
+    addHabit(args, {renderer}) {
+        const habit = this.service.addHabit(args.name, args.freq);
+        renderer.success('Habit successfully added!');
+        renderer.details(`ID: ${habit.id}`);
+        renderer.details(`Title: ${habit.title}`);
+        renderer.details(`Frequency: ${habit.freq}`);
+        renderer.details(`Created At: ${habit.updatedAt}`);
+        renderer.section('Habit Info');
+        renderer.table([habit]);
     }
 
     updateHabit(args) {
@@ -23,7 +30,15 @@ export class HabitManagerController extends BaseController {
 
     getAllHabits(_, {renderer}) {
         const habits = this.service.getAllHabits();
-        renderer?.log?.(habits);
+
+        if (!habits.length) {
+            renderer.warning?.('No habits found. Use `add` command to create one.');
+            return;
+        }
+
+        renderer.section?.('Your Habits');
+        renderer.details?.(`Total habits: ${habits.length}`);
+        renderer.table(habits);
     }
 
     getHabitById(id) {

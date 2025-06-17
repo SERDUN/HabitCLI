@@ -6,9 +6,9 @@ export class HabitTrackingController extends BaseController {
         super();
         this.service = service;
 
-        this.register('done', 'doneHabit');
-        this.register('calculateCompletionPercentageById', 'calculateCompletionPercentageById');
-        this.register('calculateCompletionPercentage', 'calculateCompletionPercentage');
+        this.register('done', this.doneHabit.bind(this));
+        this.register('calculateCompletionPercentageById', this.calculateCompletionPercentageById.bind(this));
+        this.register('calculateCompletionPercentage', this.calculateCompletionPercentage.bind(this));
     }
 
     doneHabit(args) {

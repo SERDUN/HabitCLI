@@ -6,11 +6,11 @@ export class HabitManagerController extends BaseController {
         super();
         this.service = service;
 
-        this.register('add', 'addHabit');
-        this.register('update', 'updateHabit');
-        this.register('list', 'getAllHabits');
-        this.register('get', 'getHabitById');
-        this.register('delete', 'deleteHabit');
+        this.register('add', this.addHabit.bind(this));
+        this.register('update', this.updateHabit.bind(this));
+        this.register('list', this.getAllHabits.bind(this));
+        this.register('get', this.getHabitById.bind(this));
+        this.register('delete', this.deleteHabit.bind(this));
     }
 
     addHabit(args, {renderer}) {

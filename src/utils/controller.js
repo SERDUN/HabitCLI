@@ -3,20 +3,18 @@ export class BaseController {
         this.routes = {};
     }
 
-    register(action, methodName) {
-        this.routes[action] = methodName;
+    register(action, handlerFn) {
+        this.routes[action] = handlerFn;
     }
 
     execute(action, ...args) {
-        const methodName = this.routes[action];
-
-        if (typeof this[methodName] === 'function') {
-            return this[methodName](...args);
+        const handler = this.routes[action];
+        if (typeof handler === 'function') {
+            return handler(...args);
         }
     }
 
     canHandle(action) {
-        const methodName = this.routes[action];
-        return typeof this[methodName] === 'function';
+        return typeof this.routes[action] === 'function';
     }
 }

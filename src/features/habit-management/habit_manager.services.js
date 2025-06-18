@@ -1,5 +1,5 @@
 import {HabitRepository} from '../../repository/index.js';
-import {Habit} from "../../models/index.js";
+import {Habit} from '../../models/index.js';
 
 /**
  * Service class for managing habit-related operations.

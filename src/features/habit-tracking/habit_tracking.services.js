@@ -19,23 +19,15 @@ export class HabitTrackingServices {
 			throw new Error(`Habit with id ${id} not found`);
 		}
 
-		// Check if the habit is already done by habit frequency
 		const record = this.trackingRepository.getStatusesByHabitId(habit.id);
-		if (!record || !record.statuses || record.statuses.length === 0) {
+		const latest = this.#getLatestStatus(record);
+
+		if (!latest) {
 			return this.trackingRepository.addStatus(habit.id, new HabitStatus(this.timeRangeUtils.getNow(), status));
 		}
 
-		const sortedStatuses = [...record.statuses].sort((a, b) => new Date(a.date) - new Date(b.date));
-		const lastStatus = sortedStatuses[sortedStatuses.length - 1];
-		const lastDate = lastStatus.date;
-
-		const isInCurrentRange = this.timeRangeUtils.isInCurrentRange(habit.freq, lastDate);
-		console.log(isInCurrentRange, lastDate, lastStatus);
-		if (!isInCurrentRange) {
-			return this.trackingRepository.addStatus(habit.id, new HabitStatus(this.timeRangeUtils.getNow(), status));
-		} else {
-			throw new Error(`Habit with id ${id} is already done for today`);
-		}
+		this.#assertStatusNotAlreadyDone(habit, latest.date);
+		return this.trackingRepository.addStatus(habit.id, new HabitStatus(this.timeRangeUtils.getNow(), status));
 	}
 
 	calculateCompletionPercentageById(habitId, from, to) {
@@ -47,6 +39,7 @@ export class HabitTrackingServices {
 			const statusDate = new Date(status.date);
 			return statusDate >= from && statusDate <= to;
 		});
+
 		if (statuses.length === 0) {
 			return 0;
 		}
@@ -61,5 +54,16 @@ export class HabitTrackingServices {
 
 	getAllStatuses() {
 		return this.trackingRepository.getAllStatuses();
+	}
+
+	#getLatestStatus(record) {
+		if (!record || !record.statuses?.length) return null;
+		return [...record.statuses].sort((a, b) => new Date(a.date) - new Date(b.date)).at(-1);
+	}
+
+	#assertStatusNotAlreadyDone(habit, lastStatusDate) {
+		if (this.timeRangeUtils.isInCurrentRange(habit.freq, lastStatusDate)) {
+			throw new Error(`Habit with id ${habit.id} is already done for today`);
+		}
 	}
 }

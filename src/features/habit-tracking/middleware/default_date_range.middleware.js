@@ -13,13 +13,13 @@
  * @returns {object} - Updated args with `from` and `to` Date objects.
  */
 export function defaultDateRange(args, dateOffset = 0, rangeDays = 30, toOverride = null) {
-    const base = new Date();
-    base.setHours(0, 0, 0, 0);
-    const shifted = new Date(base.getTime() + dateOffset * 86400000); // Apply offset
+	const base = new Date();
+	base.setHours(0, 0, 0, 0);
+	const shifted = new Date(base.getTime() + dateOffset * 86400000); // Apply offset
 
-    const from = args.from ? new Date(args.from) : shifted;
+	const from = args.from ? new Date(args.from) : shifted;
 
-    const to = args.to ? new Date(args.to) : (toOverride instanceof Date ? toOverride : new Date(from.getTime() + (rangeDays - 1) * 86400000));
+	const to = args.to ? new Date(args.to) : (toOverride instanceof Date ? toOverride : new Date(from.getTime() + (rangeDays - 1) * 86400000));
 
-    return {...args, from, to};
+	return {...args, from, to};
 }

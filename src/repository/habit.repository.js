@@ -1,7 +1,7 @@
 import {JsonListDataSource} from '../datasources/index.js';
 import {generateRandomId} from '../utils/index.js';
-import Habit from '../models/habit.model.js';
-import {HabitEntity} from '../entities/habit.entity.js';
+import {Habit} from '../models/index.js';
+import {HabitEntity} from '../entities/index.js';
 
 export class HabitRepository {
 	constructor(dataSource = new JsonListDataSource('habits.json')) {

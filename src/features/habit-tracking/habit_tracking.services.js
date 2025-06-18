@@ -1,5 +1,5 @@
 import {HabitRepository} from '../../repository/index.js';
-import {TrackingRepository} from '../../repository/tracking.repository.js';
+import {TrackingRepository} from '../../repository/index.js';
 import {TimeRangeUtils} from '../../utils/index.js';
 import {HabitStatus} from '../../models/index.js';
 
@@ -13,7 +13,7 @@ export class HabitTrackingServices {
 	/**
 	 * @typedef {'PENDING' | 'IN_PROGRESS' | 'DONE'} status
 	 */
-	addTrackingStatus(id, status= 'DONE') {
+	addTrackingStatus(id, status = 'DONE') {
 		const habit = this.habitRepository.getById(id);
 		if (!habit) {
 			throw new Error(`Habit with id ${id} not found`);

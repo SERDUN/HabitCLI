@@ -1,7 +1,7 @@
 import {JsonListDataSource} from '../datasources/index.js';
-import {HabitStatusRecord} from '../models/habit_status_record.js';
-import {HabitStatusRecordEntity} from '../entities/habit_status_record.entity.js';
-import {HabitStatusEntity} from '../entities/habit_status.entity.js';
+import {HabitStatusRecord} from '../models/index.js';
+import {HabitStatusRecordEntity} from '../entities/index.js';
+import {HabitStatusEntity} from '../entities/index.js';
 import {HabitStatus} from '../models/index.js';
 
 export class TrackingRepository {
@@ -68,8 +68,6 @@ export class TrackingRepository {
 		}
 	}
 
-
-
 	/**
 	 * Maps a persistence entity to a domain model (includes habit metadata).
 	 * @param {HabitStatusRecordEntity} entity
@@ -83,10 +81,8 @@ export class TrackingRepository {
 		return new HabitStatusRecord(habit, entity.statuses.map(s => new HabitStatus(s.date, s.status)));
 	}
 
-
 	#toStatusEntity(status) {
 		console.log('Converting status to entity:', status);
 		return new HabitStatusEntity(status.date, status.status);
 	}
-
 }

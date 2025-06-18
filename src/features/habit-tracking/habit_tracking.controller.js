@@ -2,7 +2,7 @@ import {BaseController, validateOrFail} from '../../utils/index.js';
 import {HabitTrackingServices} from './habit_tracking.services.js';
 import {CompletionStatsRow} from './dto/index.js';
 import {HabitRepository} from '../../repository/index.js';
-import {TrackingRepository} from '../../repository/tracking.repository.js';
+import {TrackingRepository} from '../../repository/index.js';
 
 /**
  * Controller for tracking habit completion.

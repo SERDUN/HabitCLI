@@ -28,7 +28,7 @@ export class BaseRenderer {
     }
 
     #formatSection(title, color) {
-        return `\n${color}=== ${title} ===${COLORS.reset}`;
+        return `\n${color}${title}${COLORS.reset}`;
     }
 
     #formatMessage(message, color) {

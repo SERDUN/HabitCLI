@@ -23,7 +23,7 @@ test('HabitManagerController - addHabit adds habit via service', () => {
     const habit = {id: '1', name: 'Read'};
     controller.addHabit(habit);
 
-    const all = controller.getAllHabits();
+    const all = controller.listHabits();
     assert.equal(all.length, 1);
     assert.deepEqual(all[0], habit);
 });
@@ -38,7 +38,7 @@ test('HabitManagerController - updateHabit updates habit via service', () => {
     controller.addHabit(habit);
     controller.updateHabit(habit, updated);
 
-    const result = controller.getHabitById('1');
+    const result = controller.findHabitById('1');
     assert.deepEqual(result, updated);
 });
 
@@ -49,7 +49,7 @@ test('HabitManagerController - getAllHabits returns all habits', () => {
     controller.addHabit({id: '1', name: 'A'});
     controller.addHabit({id: '2', name: 'B'});
 
-    const result = controller.getAllHabits();
+    const result = controller.listHabits();
     assert.equal(result.length, 2);
 });
 
@@ -60,6 +60,6 @@ test('HabitManagerController - getHabitById returns correct habit', () => {
     const habit = {id: '99', name: 'Focused work'};
     controller.addHabit(habit);
 
-    const found = controller.getHabitById('99');
+    const found = controller.findHabitById('99');
     assert.deepEqual(found, habit);
 });

@@ -1,34 +1,55 @@
 import {HabitManagerServices} from './habit_manager.services.js';
 import {BaseController} from '../../utils/index.js';
 
+/**
+ * Controller for managing habit-related commands.
+ * Registers CLI commands and connects them to habit service logic.
+ */
 export class HabitManagerController extends BaseController {
+    /**
+     * @param {HabitManagerServices} service - The habit manager service instance.
+     */
     constructor(service = new HabitManagerServices()) {
         super();
         this.service = service;
-
-        this.register('add', this.addHabit.bind(this));
-        this.register('update', this.updateHabit.bind(this));
-        this.register('list', this.getAllHabits.bind(this));
-        this.register('get', this.getHabitById.bind(this));
-        this.register('delete', this.deleteHabit.bind(this));
+        this.#registerCommands();
     }
 
+    /**
+     * Registers CLI commands with their corresponding handler methods.
+     * @private
+     */
+    #registerCommands() {
+        this.register('add', this.addHabit.bind(this));
+        this.register('update', this.updateHabit.bind(this));
+        this.register('list', this.listHabits.bind(this));
+        this.register('get', this.findHabitById.bind(this));
+        this.register('delete', this.deleteHabitById.bind(this));
+    }
+
+    /**
+     * Creates a new habit.
+     * @param {{name: string, freq: string}} args - Habit creation data.
+     * @param {{renderer: any}} context - Rendering context for CLI output.
+     */
     addHabit(args, {renderer}) {
+        if (!args.name || !args.freq) {
+            renderer?.error?.('Name and frequency are required.');
+            return;
+        }
+
         const habit = this.service.addHabit(args.name, args.freq);
         renderer.success('Habit successfully added!');
-        renderer.details(`ID: ${habit.id}`);
-        renderer.details(`Title: ${habit.title}`);
-        renderer.details(`Frequency: ${habit.freq}`);
-        renderer.details(`Created At: ${habit.updatedAt}`);
         renderer.section('Habit Info');
         renderer.table([habit]);
     }
 
-    updateHabit(args) {
-        return this.service.updateHabit(args.id, args.name, '', '');
-    }
-
-    getAllHabits(_, {renderer}) {
+    /**
+     * Lists all existing habits.
+     * @param {*} _args - Not used.
+     * @param {{renderer: any}} context - Rendering context for CLI output.
+     */
+    listHabits(_, {renderer}) {
         const habits = this.service.getAllHabits();
 
         if (!habits.length) {
@@ -41,11 +62,40 @@ export class HabitManagerController extends BaseController {
         renderer.table(habits);
     }
 
-    getHabitById(id) {
-        return this.service.getHabitById(id);
+    /**
+     * Finds a habit by its ID.
+     * @param {{id: string}} args - The ID of the habit to retrieve.
+     * @param {{renderer: any}} context - Rendering context for CLI output.
+     */
+    findHabitById(args, {renderer}) {
+        const habit = this.service.getHabitById(args.id);
+        if (!habit) {
+            renderer?.warning?.(`No habit found with ID: ${args.id}`);
+            return;
+        }
+        renderer.success(`Habit with ID ${args.id}:`);
+        renderer.table([habit]);
     }
 
-    deleteHabit(args) {
-        return this.service.deleteHabit(args.id);
+    /**
+     * Updates a habit by its ID.
+     * @param {{id: string, name: string, freq: string}} args - Habit update data.
+     * @param {{renderer: any}} context - Rendering context for CLI output.
+     */
+    updateHabit(args, {renderer}) {
+        const habit = this.service.updateHabit(args.id, args.name, args.freq);
+        renderer.success('Habit successfully updated!');
+        renderer.section('Habit Info');
+        renderer.table([habit]);
+    }
+
+    /**
+     * Deletes a habit by its ID.
+     * @param {{id: string}} args - The ID of the habit to delete.
+     * @param {{renderer: any}} context - Rendering context for CLI output.
+     */
+    deleteHabitById(args, {renderer}) {
+        this.service.deleteHabit(args.id);
+        renderer?.success?.(`Habit with ID ${args.id} deleted.`);
     }
 }

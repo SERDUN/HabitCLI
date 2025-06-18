@@ -3,6 +3,7 @@ const COLORS = {
     cyan: '\x1b[36m',
     green: '\x1b[32m',
     blue: '\x1b[34m',
+    red: '\x1b[31m',
 };
 
 export class BaseRenderer {
@@ -16,6 +17,10 @@ export class BaseRenderer {
 
     success(message, color = COLORS.green) {
         console.log(this.#formatMessage(message, color));
+    }
+
+    error(message, color = COLORS.red) {
+        console.error(this.#formatMessage(message, color));
     }
 
     details(message, color = COLORS.blue) {

@@ -39,7 +39,11 @@ export class HabitTrackingController extends BaseController {
 			renderer.error(errors.join('; '));
 		})) return;
 
-		this.service.addTrackingStatus(args.id);
+		try {
+			this.service.addTrackingStatus(args.id);
+		} catch (error) {
+			renderer.error?.(error.message);
+		}
 	}
 
 	/**
@@ -62,11 +66,14 @@ export class HabitTrackingController extends BaseController {
 			return;
 		}
 
-		const percent = this.service.calculateCompletionPercentageById(args.id, args.from, args.to);
+		try {
+			const percent = this.service.calculateCompletionPercentageById(args.id, args.from, args.to);
 
-		renderer.section?.(`Overall Completion Overview (${args.from.toISOString()} → ${args.to.toISOString()})`);
-		renderer.table?.([new CompletionStatsRow(record.habit.id, record.habit.title, record.uniqueDays.size, percent).toTableRow()]);
-
+			renderer.section?.(`Overall Completion Overview (${args.from.toISOString()} → ${args.to.toISOString()})`);
+			renderer.table?.([new CompletionStatsRow(record.habit.id, record.habit.title, record.uniqueDays.size, percent).toTableRow()]);
+		} catch (error) {
+			renderer.error?.(error.message);
+		}
 	}
 
 	/**
@@ -84,12 +91,16 @@ export class HabitTrackingController extends BaseController {
 			return;
 		}
 
-		const tableData = records.map(record => {
-			const percent = this.service.calculateCompletionPercentageById(record.habit.id, args.from, args.to);
-			return new CompletionStatsRow(record.habit.id, record.habit.title, record.uniqueDays.size, percent).toTableRow();
-		});
+		try {
+			const tableData = records.map(record => {
+				const percent = this.service.calculateCompletionPercentageById(record.habit.id, args.from, args.to);
+				return new CompletionStatsRow(record.habit.id, record.habit.title, record.uniqueDays.size, percent).toTableRow();
+			});
 
-		renderer.section?.(`Overall Completion Overview (${args.from.toISOString()} → ${args.to.toISOString()})`);
-		renderer.table?.(tableData);
+			renderer.section?.(`Overall Completion Overview (${args.from.toISOString()} → ${args.to.toISOString()})`);
+			renderer.table?.(tableData);
+		} catch (error) {
+			renderer.error?.(error.message);
+		}
 	}
 }

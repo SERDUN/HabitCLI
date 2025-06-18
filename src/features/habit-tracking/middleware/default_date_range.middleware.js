@@ -12,14 +12,16 @@
  * @param {Date|null} toOverride - Optional override for `to` date.
  * @returns {object} - Updated args with `from` and `to` Date objects.
  */
+import {TimeRangeUtils} from '../../../utils/index.js';
+
 export function defaultDateRange(args, dateOffset = 0, rangeDays = 30, toOverride = null) {
 	const base = new Date();
 	base.setHours(0, 0, 0, 0);
-	const shifted = new Date(base.getTime() + dateOffset * 86400000); // Apply offset
+	const shifted = new Date(base.getTime() + dateOffset * TimeRangeUtils.MILLISECONDS_IN_DAY);
 
 	const from = args.from ? new Date(args.from) : shifted;
 
-	const to = args.to ? new Date(args.to) : (toOverride instanceof Date ? toOverride : new Date(from.getTime() + (rangeDays - 1) * 86400000));
+	const to = args.to ? new Date(args.to) : (toOverride instanceof Date ? toOverride : new Date(from.getTime() + (rangeDays - 1) * TimeRangeUtils.MILLISECONDS_IN_DAY));
 
 	return {...args, from, to};
 }

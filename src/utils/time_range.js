@@ -2,6 +2,8 @@
  * Utility class for working with time-based ranges and comparisons.
  */
 export class TimeRangeUtils {
+	static MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24;
+
 	/**
 	 * @param {number} dayOffset - Optional number of days to shift "today". Positive shifts into the future, negative into the past.
 	 */

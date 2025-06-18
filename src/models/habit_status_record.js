@@ -5,25 +5,19 @@ import {HabitStatus} from './habit_status.js';
  */
 export class HabitStatusRecord {
     /**
-     * @param {string} habitId - ID of the corresponding habit
+     * @param {Habit} habit - ID of the corresponding habit
      * @param {HabitStatus[]} statuses - Array of status entries
      */
-    constructor(habitId, statuses = []) {
-        this.habitId = habitId;
+    constructor(habit, statuses = []) {
+        this.habit = habit;
         this.statuses = statuses.map(s => new HabitStatus(s.date, s.status));
     }
 
     /**
-     * Returns a new HabitStatusRecord with overridden fields
-     * @param {Object} fields
-     * @param {string} [fields.habitId]
-     * @param {HabitStatus[]} [fields.statuses]
-     * @returns {HabitStatusRecord}
+     * Returns a Set of unique dates (yyyy-mm-dd) when the habit was marked.
+     * @returns {Set<string>}
      */
-    copyWith({habitId, statuses} = {}) {
-        return new HabitStatusRecord(
-            habitId ?? this.habitId,
-            statuses ?? this.statuses
-        );
+    get uniqueDays() {
+        return new Set(this.statuses.map(s => new Date(s.date).toISOString().slice(0, 10)));
     }
 }

@@ -4,11 +4,13 @@
 export class CompletionStatsRow {
     /**
      * @param {string} habitId
+     * @param {string} habitTitle
      * @param {number} completedDays
      * @param {number} completionPercent
      */
-    constructor(habitId, completedDays, completionPercent) {
+    constructor(habitId, habitTitle, completedDays, completionPercent) {
         this.habitId = habitId;
+        this.habitTitle = habitTitle;
         this.completedDays = completedDays;
         this.completionPercent = completionPercent;
     }
@@ -20,6 +22,7 @@ export class CompletionStatsRow {
     toTableRow() {
         return {
             HabitID: this.habitId,
+            Title: this.habitTitle,
             'Completed Days (30d)': this.completedDays,
             'Completion %': this.completionPercent.toFixed(2),
         };

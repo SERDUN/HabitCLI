@@ -1,55 +1,92 @@
 import {JsonListDataSource} from '../datasources/index.js';
 import {HabitStatusRecord} from '../models/habit_status_record.js';
+import {HabitStatusRecordEntity} from '../entities/habit_status_record.entity.js';
+import {HabitStatusEntity} from '../entities/habit_status.entity.js';
 import {HabitStatus} from '../models/index.js';
 
-
 export class TrackingRepository {
-    constructor(dataSource = new JsonListDataSource('tracking.json')) {
-        this.dataSource = dataSource;
-    }
+	constructor(trackingJsonDatasource = new JsonListDataSource('tracking.json'), habitJsonDatasource = new JsonListDataSource('habits.json')) {
+		this.trackingJsonDatasource = trackingJsonDatasource;
+		this.habitJsonDatasource = habitJsonDatasource;
+	}
 
-    getStatusesByHabitId(habitId) {
-        const existing = this.dataSource.getByProperty('habitId', habitId);
-        if (!existing) {
-            return null;
-        }
-        return new HabitStatusRecord(existing.habitId, existing.statuses);
-    }
+	/**
+	 * Retrieves the full status history for a given habit ID.
+	 *
+	 * @param {string} habitId - The unique identifier of the habit.
+	 * @returns {HabitStatusRecord | null} The status record, or null if habit or tracking data is not found.
+	 * @throws {TypeError} If habitId is not a non-empty string.
+	 */
+	getStatusesByHabitId(habitId) {
+		this.#validateHabitId(habitId);
 
-    addStatus(habitId) {
-        const existing = this.dataSource.getByProperty('habitId', habitId);
+		const entity = this.trackingJsonDatasource.getByProperty('habitId', habitId);
+		return entity ? this.#toModel(entity) : null;
+	}
 
-        const newStatus = HabitStatus.create('DONE');
+	/**
+	 * Adds a new status entry for the specified habit.
+	 *
+	 * @param {string} habitId - The unique identifier of the habit.
+	 * @param {HabitStatus} status - The status to be recorded.
+	 * @throws {TypeError} If habitId or status is invalid.
+	 */
+	addStatus(habitId, status) {
+		console.log('Adding status for habit:', habitId, 'with status:', status);
+		const newStatus = this.#toStatusEntity(status);
+		const existing = HabitStatusRecordEntity.fromJSON(this.trackingJsonDatasource.getByProperty('habitId', habitId));
 
-        if (!existing) {
-            this.dataSource.add(new HabitStatusRecord(habitId, [newStatus]));
-            return;
-        }
+		if (!existing) {
+			this.trackingJsonDatasource.add(new HabitStatusRecordEntity(habitId, [newStatus]));
+			return;
+		}
+		const updated = existing.cloneWith(newStatus);
+		this.trackingJsonDatasource.update(existing, updated);
+	}
 
-        const updated = new HabitStatusRecord(habitId, [...existing.statuses, newStatus]);
+	/**
+	 * Retrieves status records for all habits that have tracking data.
+	 *
+	 * @returns {HabitStatusRecord[]} An array of status records. Habits without metadata are skipped.
+	 */
+	getAllStatuses() {
+		const allEntities = this.trackingJsonDatasource.getAll();
 
-        this.dataSource.update(existing, updated);
-    }
+		return allEntities
+			.map((entity) => this.#toModel(entity))
+			.filter(Boolean);
+	}
 
-    updateStatus(habitId, date, newStatus) {
-        const existing = this.dataSource.getByProperty('habitId', habitId);
-        if (!existing) {
-            throw new Error(`Habit with id ${habitId} not found`);
-        }
+	/**
+	 * Validates habit ID.
+	 * @param {string} habitId
+	 * @private
+	 */
+	#validateHabitId(habitId) {
+		if (typeof habitId !== 'string' || habitId.trim() === '') {
+			throw new TypeError('habitId must be a non-empty string');
+		}
+	}
 
-        const updatedStatuses = existing.statuses.map((status) => {
-            if (status.date === date) {
-                return HabitStatus.create(newStatus, date);
-            }
-            return status;
-        });
 
-        const updatedRecord = new HabitStatusRecord(existing.habitId, updatedStatuses);
-        this.dataSource.update(existing, updatedRecord);
-    }
 
-    getAllStatuses() {
-        const all = this.dataSource.getAll();
-        return all.map((e) => new HabitStatusRecord(e.habitId, e.statuses));
-    }
+	/**
+	 * Maps a persistence entity to a domain model (includes habit metadata).
+	 * @param {HabitStatusRecordEntity} entity
+	 * @returns {HabitStatusRecord | null}
+	 * @private
+	 */
+	#toModel(entity) {
+		const habit = this.habitJsonDatasource.getByProperty('id', entity.habitId);
+		if (!habit) return null;
+
+		return new HabitStatusRecord(habit, entity.statuses.map(s => new HabitStatus(s.date, s.status)));
+	}
+
+
+	#toStatusEntity(status) {
+		console.log('Converting status to entity:', status);
+		return new HabitStatusEntity(status.date, status.status);
+	}
+
 }

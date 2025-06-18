@@ -4,3 +4,4 @@ export * from './controller.js';
 export * from './identity.js';
 export * from './input.js';
 export * from './time_range.js';
+export * from './validate_args.js';

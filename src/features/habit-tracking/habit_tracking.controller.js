@@ -1,6 +1,6 @@
 import {BaseController, validateOrFail} from '../../utils/index.js';
 import {HabitTrackingServices} from './habit_tracking.services.js';
-import {CompletionStatsRow} from "./dto/index.js";
+import {CompletionStatsRow} from './dto/index.js';
 
 /**
  * Controller for tracking habit completion.
@@ -65,7 +65,7 @@ export class HabitTrackingController extends BaseController {
         }
         renderer.section?.('Habit Completion Overview');
         const uniqueDays = new Set(record.statuses.map(s => new Date(s.date).toISOString().slice(0, 10)));
-        return new CompletionStatsRow(record.habitId, uniqueDays.size, percent).toTableRow()
+        return new CompletionStatsRow(record.habitId, uniqueDays.size, percent).toTableRow();
     }
 
 
@@ -91,7 +91,7 @@ export class HabitTrackingController extends BaseController {
         const tableData = records.map(record => {
             const uniqueDays = new Set(record.statuses.map(s => new Date(s.date).toISOString().slice(0, 10)));
             const percent = this.service.calculateCompletionPercentageById(record.habitId, thirtyDaysAgo.toISOString(), today.toISOString());
-            return new CompletionStatsRow(record.habitId, uniqueDays.size, percent).toTableRow()
+            return new CompletionStatsRow(record.habitId, uniqueDays.size, percent).toTableRow();
         });
 
         renderer.table?.(tableData);

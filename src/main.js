@@ -5,6 +5,9 @@ import {CommandRouter} from './utils/index.js';
 const args = getArguments();
 const command = getCommand();
 
-const router = new CommandRouter([new HabitManagerController(), new HabitTrackingController(),]);
+const router = new CommandRouter();
+
+router.addController(HabitManagerController);
+router.addController(HabitTrackingController);
 
 await router.handle(command, args);

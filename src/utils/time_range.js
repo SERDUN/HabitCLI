@@ -1,62 +1,127 @@
-export const TimeRange = {
-    isToday(isoString) {
-        const inputDate = new Date(isoString);
-        const now = new Date();
+/**
+ * Utility class for working with time-based ranges and comparisons.
+ */
+export class TimeRangeUtils {
+	/**
+	 * @param {number} dayOffset - Optional number of days to shift "today". Positive shifts into the future, negative into the past.
+	 */
+	constructor(dayOffset = 0) {
+		this.dayOffset = dayOffset;
+	}
 
-        return inputDate.getFullYear() === now.getFullYear() && inputDate.getMonth() === now.getMonth() && inputDate.getDate() === now.getDate();
-    },
+	/**
+	 * Returns a shifted version of the current date.
+	 * @returns {Date}
+	 */
+	getNow() {
+		const now = new Date();
+		now.setDate(now.getDate() + this.dayOffset);
+		return now;
+	}
 
-    isThisWeek(isoString) {
-        const inputDate = new Date(isoString);
-        const now = new Date();
+	/**
+	 * Checks if the given ISO date string is today.
+	 * @param {string} isoString
+	 * @returns {boolean}
+	 */
+	isToday(isoString) {
+		const inputDate = new Date(isoString);
+		const now = this.getNow();
 
-        const startOfWeek = new Date(now);
-        startOfWeek.setDate(now.getDate() - now.getDay()); // Sunday
+		return (
+			inputDate.getFullYear() === now.getFullYear() &&
+			inputDate.getMonth() === now.getMonth() &&
+			inputDate.getDate() === now.getDate()
+		);
+	}
 
-        const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 6);
+	/**
+	 * Checks if the given ISO date string falls within the current week (Sunday–Saturday).
+	 * @param {string} isoString
+	 * @returns {boolean}
+	 */
+	isThisWeek(isoString) {
+		const inputDate = new Date(isoString);
+		const now = this.getNow();
 
-        return inputDate >= TimeRange.startOfDay(startOfWeek) && inputDate <= TimeRange.endOfDay(endOfWeek);
-    },
+		const startOfWeek = new Date(now);
+		startOfWeek.setDate(now.getDate() - now.getDay()); // Sunday
 
-    isThisMonth(isoString) {
-        const inputDate = new Date(isoString);
-        const now = new Date();
+		const endOfWeek = new Date(startOfWeek);
+		endOfWeek.setDate(startOfWeek.getDate() + 6); // Saturday
 
-        return inputDate.getFullYear() === now.getFullYear() && inputDate.getMonth() === now.getMonth();
-    },
+		return (
+			inputDate >= this.startOfDay(startOfWeek) &&
+			inputDate <= this.endOfDay(endOfWeek)
+		);
+	}
 
-    isInCurrentRange(freq, isoString) {
-        switch (freq) {
-            case 'day':
-                return TimeRange.isToday(isoString);
-            case 'week':
-                return TimeRange.isThisWeek(isoString);
-            case 'monthly':
-                return TimeRange.isThisMonth(isoString);
-            default:
-                throw new Error(`Unsupported frequency: ${freq}`);
-        }
-    },
+	/**
+	 * Checks if the given ISO date string is in the current month.
+	 * @param {string} isoString
+	 * @returns {boolean}
+	 */
+	isThisMonth(isoString) {
+		const inputDate = new Date(isoString);
+		const now = this.getNow();
 
-    getTotalDaysInRange(startDate, endDate) {
-        const start = new Date(startDate);
-        const end = new Date(endDate);
+		return (
+			inputDate.getFullYear() === now.getFullYear() &&
+			inputDate.getMonth() === now.getMonth()
+		);
+	}
 
-        const startOnlyDate = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-        const endOnlyDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+	/**
+	 * Determines whether a date falls in the current range based on frequency.
+	 * @param {'day' | 'week' | 'monthly'} freq
+	 * @param {string} isoString
+	 * @returns {boolean}
+	 */
+	isInCurrentRange(freq, isoString) {
+		switch (freq) {
+			case 'day':
+				return this.isToday(isoString);
+			case 'week':
+				return this.isThisWeek(isoString);
+			case 'monthly':
+				return this.isThisMonth(isoString);
+			default:
+				throw new Error(`Unsupported frequency: ${freq}`);
+		}
+	}
 
-        const msPerDay = 1000 * 60 * 60 * 24;
-        const diff = Math.round((endOnlyDate - startOnlyDate) / msPerDay);
+	/**
+	 * Calculates the total number of days in a date range, inclusive of both start and end dates.
+	 * Assumes both parameters are valid Date objects.
+	 * @param {Date} startDate
+	 * @param {Date} endDate
+	 * @returns {number}
+	 */
+	getTotalDaysInRange(startDate, endDate) {
+		const startOnly = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+		const endOnly = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
 
-        return diff + 1;
-    },
+		const msPerDay = 1000 * 60 * 60 * 24;
+		const diff = Math.round((endOnly - startOnly) / msPerDay);
 
-    startOfDay(date) {
-        return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
-    },
+		return diff + 1;
+	}
 
-    endOfDay(date) {
-        return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
-    }
-};
+	/**
+	 * Returns the beginning of a day (00:00:00.000).
+	 * @param {Date} date
+	 * @returns {Date}
+	 */
+	startOfDay(date) {
+		return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
+	}
+
+	/**
+	 * Returns the end of a day (23:59:59.999).
+	 * @param {Date} date
+	 * @returns {Date}
+	 */
+	endOfDay(date) {
+		return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
+	}
+}
